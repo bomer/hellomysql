@@ -35,7 +35,7 @@ func wipeTable(db *sql.DB) {
 		panic(err.Error()) // proper error handling instead of panic in your app
 	}
 }
-func insert(db *sql.DB) {
+func insert(db *sql.DB, limit int) {
 	// Prepare statement for inserting data
 	stmtIns, err := db.Prepare("INSERT INTO squarenum VALUES( ?, ? )") // ? = placeholder
 	if err != nil {
@@ -44,7 +44,7 @@ func insert(db *sql.DB) {
 	defer stmtIns.Close() // Close the statement when we leave main() / the program terminates
 
 	// Insert square numbers for 0-24 in the database
-	for i := 1; i <= 1000; i++ {
+	for i := 1; i <= limit; i++ {
 
 		_, err = stmtIns.Exec(i, (i * i)) // Insert tuples (i, i^2)
 		if err != nil {

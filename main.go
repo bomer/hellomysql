@@ -35,16 +35,7 @@ func wipeTable(db *sql.DB) {
 		panic(err.Error()) // proper error handling instead of panic in your app
 	}
 }
-
-func main() {
-	db, err := sql.Open("mysql", "root:password@/testgo")
-	if err != nil {
-		panic(err.Error()) // Just for example purpose. You should use proper error handling instead of panic
-	}
-	defer db.Close()
-
-	wipeTable(db)
-
+func insert(db *sql.DB) {
 	// Prepare statement for inserting data
 	stmtIns, err := db.Prepare("INSERT INTO squarenum VALUES( ?, ? )") // ? = placeholder
 	if err != nil {
@@ -60,6 +51,16 @@ func main() {
 			panic(err.Error()) // proper error handling instead of panic in your app
 		}
 	}
+}
+
+func main() {
+	db, err := sql.Open("mysql", "root:password@/testgo")
+	if err != nil {
+		panic(err.Error()) // Just for example purpose. You should use proper error handling instead of panic
+	}
+	defer db.Close()
+
+	wipeTable(db)
 
 	// Query the square-number of 13 & 55
 	read(db, 13)

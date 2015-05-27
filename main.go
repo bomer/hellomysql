@@ -61,7 +61,7 @@ func main() {
 	defer db.Close()
 
 	wipeTable(db)
-
+	insert(db)
 	// Query the square-number of 13 & 55
 	read(db, 13)
 	read(db, 55)

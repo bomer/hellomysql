@@ -1,1 +1,1 @@
-web: ./testmysql -port=8008
+web: bin/testmysql -port=8008

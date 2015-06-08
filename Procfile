@@ -1,1 +1,1 @@
-web: bin/testmysql -port=8008
+web: bin/hellomysql -port=8008

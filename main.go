@@ -14,8 +14,8 @@ var (
 )
 
 type SquareNumber struct {
-	number int
-	square int
+	Number int
+	Square int
 }
 
 func read(db *sql.DB, num int) {
@@ -56,7 +56,7 @@ func readAllRows(db *sql.DB) {
 		if err := rows.Scan(&num, &square); err != nil {
 			panic(err.Error())
 		}
-		newData := SquareNumber{number: num, square: square}
+		newData := SquareNumber{Number: num, Square: square}
 		tempDataSet = append(tempDataSet, newData)
 		// fmt.Printf("%d square is %d\n", newData.number, newData.square)
 
@@ -125,7 +125,7 @@ func pollDatabase(db *sql.DB) {
 		// fmt.Fprintf("data 0 = %d", data[0].square)
 
 		go readAllRows(db)
-		fmt.Printf("There is %d rows, row 10 =  %d", len(data), data[9].square)
+		fmt.Printf("There is %d rows, row 10 =  %d", len(data), data[9].Square)
 	}
 }
 func main() {

@@ -23,6 +23,30 @@ func read(db *sql.DB, num int) {
 
 }
 
+func readAllRows(db *sql.DB) {
+	// Prepare statement for reading data
+	rows, err := db.Query("SELECT number,squareNumber FROM squarenum")
+	if err != nil {
+		panic(err.Error()) // proper error handling instead of panic in your app
+	}
+	defer rows.Close()
+
+	for rows.Next() {
+		var num int
+		var square int
+		if err := rows.Scan(&num, &square); err != nil {
+			panic(err.Error())
+		}
+		fmt.Printf("%d square is %d\n", num, square)
+	}
+	if err := rows.Err(); err != nil {
+		panic(err.Error())
+	}
+
+	// fmt.Printf("The square number of %d is: %d \n", num, squareNum)
+
+}
+
 func wipeTable(db *sql.DB) {
 	stmtOut, err := db.Prepare("truncate squarenum")
 	if err != nil {
@@ -67,4 +91,7 @@ func main() {
 	read(db, 55)
 	read(db, 155)
 	read(db, 1555)
+
+	readAllRows(db)
+
 }

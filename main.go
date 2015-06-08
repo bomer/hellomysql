@@ -1,8 +1,11 @@
 package main
 
-import "fmt"
-import "database/sql"
-import _ "github.com/go-sql-driver/mysql"
+import (
+	"database/sql"
+	"fmt"
+	_ "github.com/go-sql-driver/mysql"
+	"time"
+)
 
 func read(db *sql.DB, num int) {
 	// Prepare statement for reading data
@@ -92,6 +95,9 @@ func main() {
 	read(db, 155)
 	read(db, 1555)
 
+	start := time.Now()
+	// some computation
 	readAllRows(db)
-
+	elapsed := time.Since(start)
+	fmt.Println(elapsed)
 }

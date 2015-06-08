@@ -6,6 +6,7 @@ import (
 	"fmt"
 	_ "github.com/go-sql-driver/mysql"
 	"net/http"
+	"os"
 	"time"
 )
 
@@ -125,11 +126,18 @@ func pollDatabase(db *sql.DB) {
 		// fmt.Fprintf("data 0 = %d", data[0].square)
 
 		go readAllRows(db)
-		fmt.Printf("There is %d rows, row 10 =  %d", len(data), data[9].Square)
+		fmt.Printf("There is %d rows", len(data))
 	}
 }
 func main() {
-	db, err := sql.Open("mysql", "root:password@/testgo")
+	//Check for OS env variable. We use this on heorku, so if it's present use that else use local
+	dburl := os.Getenv("DATABASE_URL")
+	fmt.Println("FOO:", dburl)
+	if dburl == "" {
+		fmt.Println("No db env variable found, using local")
+		dburl = "root:password@/testgo"
+	}
+	db, err := sql.Open("mysql", dburl)
 	if err != nil {
 		panic(err.Error()) // Just for example purpose. You should use proper error handling instead of panic
 	}
@@ -137,7 +145,7 @@ func main() {
 
 	wipeTable(db)
 	insert(db, 5000)
-	// Query the square-number of 13 & 55
+	// Query the square-number of some test numbers
 	read(db, 13)
 	read(db, 55)
 	read(db, 155)

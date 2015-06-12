@@ -75,6 +75,7 @@ func readAllRows(db *sql.DB) {
 }
 
 func wipeTable(db *sql.DB) {
+
 	stmtOut, err := db.Prepare("truncate squarenum")
 	if err != nil {
 		panic(err.Error()) // proper error handling instead of panic in your app
@@ -82,6 +83,7 @@ func wipeTable(db *sql.DB) {
 	defer stmtOut.Close()
 
 	_, err = stmtOut.Exec()
+
 	if err != nil {
 		panic(err.Error()) // proper error handling instead of panic in your app
 	}
@@ -109,22 +111,20 @@ func handler(w http.ResponseWriter, r *http.Request) {
 }
 
 func dataHandler(w http.ResponseWriter, r *http.Request) {
-	// json.NewEncoder(w).Encode(data)
-	js, err := json.Marshal(data)
-	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
-		return
-	}
-	w.Header().Set("Content-Type", "application/json")
-	w.Write(js)
+	json.NewEncoder(w).Encode(data)
+	// js, err := json.Marshal(data)
+	// if err != nil {
+	// 	http.Error(w, err.Error(), http.StatusInternalServerError)
+	// 	return
+	// }
+	// w.Header().Set("Content-Type", "application/json")
+	// w.Write(js)
 
 }
 
 func pollDatabase(db *sql.DB) {
 	for {
 		time.Sleep(2 * time.Second)
-		// fmt.Fprintf("data 0 = %d", data[0].square)
-
 		go readAllRows(db)
 		fmt.Printf("There is %d rows", len(data))
 	}
@@ -132,10 +132,10 @@ func pollDatabase(db *sql.DB) {
 func main() {
 	//Check for OS env variable. We use this on heorku, so if it's present use that else use local
 	dburl := os.Getenv("DATABASE_URL")
-	fmt.Println("FOO:", dburl)
 	if dburl == "" {
 		fmt.Println("No db env variable found, using local")
-		dburl = "root:password@/testgo"
+		dburl = "root:password@tcp(127.0.0.1:3306)/testgo"
+		// dburl = "bcbb9db7811db6:1e501e1c@tcp(us-cdbr-iron-east-02.cleardb.net:3306)/heroku_2c0d1e682389720" // testing heroku db
 	}
 	db, err := sql.Open("mysql", dburl)
 	if err != nil {
@@ -151,7 +151,7 @@ func main() {
 	read(db, 155)
 	read(db, 1555)
 
-	// some computation
+	// Query upfront so we dont need a null record
 	readAllRows(db)
 
 	http.HandleFunc("/", handler)
